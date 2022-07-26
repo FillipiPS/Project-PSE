@@ -1,62 +1,56 @@
 #include <dht.h>
 #include <Arduino_FreeRTOS.h>
 #include <semphr.h>
-#include <queue.h>
-#include <task.h>
 
-#define DHT11_PIN 5 /// Leitura realizada pelo pino 5.
+#define DHT11_PIN 5 /// Pino 5 para aquisição da temperatura pelo sensor.
+#define TEMPERATURE_QUANTITY 10 /// Quantidade de temperaturas a serem capturadas.
 
-/// Estrutura utilizada para ler dados do sensor.
-/// É necessária uma struct para criar a fila com xQueueCreate.
+/// É necessária uma struct para criar a fila com xQueueCreate, sendo assim é utlizada para guardar o valor da temperatura.
 struct DHTTemperature {
   float value; /// Valor da temperatura.
 };
 
 dht DHT; /// Declaração do objeto dht utilizada para obter a temperatura do sensor DHT11.
 
-/// Declaração da mutex Semaphore Handle que vai controlar a Serial Port.
-/// Garante que apenas uma tarefa controla a serial a cada vez.
+/// SemaphoreHandle responsável por controlar Serial Port, garante que apenas uma tarefa controle Serial Port por vez.
 SemaphoreHandle_t xSerialSemaphore;
 
-/// Vetor que guarda 10 dados lidos do sensor para ser calculada a média pela task TempMedia.
-float temperatures[10];
-bool isReadingFinished; /// Controla o buffer para cálculo da Média.
-int temperaturesPosition; /// Contador de preenchimento do buffer da Média.
-int i; /// Variável de controle do buzzer.
-bool isChecked;
-float avarage;
-
-/// Handle da fila que a task AnalogRead envia dados lidos do sensor.
+/// QueueHandle utilizada por TaskReadTemperature para enviar a temperatura adquirida pelo sensor.
 QueueHandle_t structQueue;
+
+float temperatures[TEMPERATURE_QUANTITY]; /// Vetor utilizado para guardar as temperaturas lidas pelo sensor.
+int temperaturesPosition; /// Variável que guarda a quantidade de temperaturas adquiridas.
+bool isReadingFinished; /// Flag responsável por calular a média das temeraturas.
+bool isChecked; /// Flag responsável por ligar o led.
+float avarege; /// Variável que guarda a média das temperaturas.
 
 void TaskReadTemperature(void *pvParameters);
 void TaskProcessTemperature(void *pvParameters);
 void TaskTemperatureAvarege(void *pvParameters);
-void TaskBuzzer(void *pvParameters);
+void TaskDisplayStatus(void *pvParameters);
 
 void setup()
 {
-  Serial.begin(9600);
-  Serial.println("Starting process");
-  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(9600); /// Configura o Baud Rate em 9600.
+  Serial.println("Starting process!");
 
-  if (xSerialSemaphore == NULL) { /// Verifica se o semáforo da porta serial já não foi criado.
+  pinMode(LED_BUILTIN, OUTPUT); /// Configura o pino LED_BUILTIN como saída.
+
+  /// Fonte: https://create.arduino.cc/projecthub/feilipu/using-freertos-semaphores-in-arduino-ide-b3cd6c
+  if (xSerialSemaphore == NULL) { /// Verifica se o SerialSemaphore ainda não foi criado.
     xSerialSemaphore = xSemaphoreCreateMutex(); /// Cria a mutex que controla a porta serial.
   } else {
-    xSemaphoreGive(xSerialSemaphore); /// Torna a porta serial disponível, "dando" o semáforo.
+    xSemaphoreGive(xSerialSemaphore); /// Torna a porta serial disponível, liberando o semáforo.
   }
 
-  /// Cria a fila de dados do sensor.
-  structQueue = xQueueCreate(10, sizeof(struct DHTTemperature));
+  structQueue = xQueueCreate(10, sizeof(struct DHTTemperature)); /// Cria a Queue para envio de dados do sensor.
 
-  if (structQueue != NULL) { /// Verifica se a fila foi criada.
-    /// Cria tarefas que serão executadas independentemente.
-    xTaskCreate(TaskProcessTemperature, "ProcessTemperature", 128, NULL, 2, NULL ); /// Cria a tarefa para consumir dados da fila.
-    xTaskCreate(TaskTemperatureAvarege, "TempMedia", 128, NULL, 2, NULL ); /// Cria a tarefa para cálculo da média.
-    xTaskCreate(TaskReadTemperature, "ReadTemperature", 128, NULL, 2, NULL); /// Cria a tarefa produtora de dados da fila.
-    xTaskCreate(TaskBuzzer, "BuzzerTone", 128, NULL, 2, NULL); /// Cria a tarefa produtora de dados da fila.
+  if (structQueue != NULL) { /// Checa se structQueue é diferente de nulo para criar as tasks.
+    xTaskCreate(TaskReadTemperature, "ReadTemperature", 128, NULL, 2, NULL); /// Cria task responsável por obter a temperatura.
+    xTaskCreate(TaskProcessTemperature, "ProcessTemperature", 128, NULL, 2, NULL); /// Cria task responsável por inserir a temperatura obtida no array temperatures e mostrar no Serial a temperatura atual.
+    xTaskCreate(TaskTemperatureAvarege, "TemperatureAvarege", 128, NULL, 2, NULL); /// Cria task responsável por realizar a média das temepraturas.
+    xTaskCreate(TaskDisplayStatus, "DisplayStatus", 128, NULL, 2, NULL); /// Cria task responsável informar o status do ar-condicionado estar refrigerando.
   }
-  /// Agora, o escalonador de tarefas, que assume o controle do escalonamento de tarefas individuais, é iniciado automaticamente.
 }
 
 void loop() { }
@@ -65,116 +59,78 @@ void loop() { }
 ///*---------------------- Tasks ---------------------*/
 ///*--------------------------------------------------*/
 
-void TaskReadTemperature(void *pvParameters __attribute__((unused))) /// Tarefa que lê dados do sensor.
-{
+void TaskReadTemperature(void *pvParameters __attribute__((unused))) {
   while (true) {
     struct DHTTemperature temperature;
-    ///  Codificação dos valores lidos em tensão para temperatura.
-    /// Fonte:
+    /// Leitura da temperatura utilizando a biblioteca dht.h. Fonte: https://portal.vidadesilicio.com.br/dht11-dht22-sensor-de-umidade-e-temperatura/
     int chk = DHT.read11(DHT11_PIN);
-    // Serial.print("Temperature = ");
-    // Serial.println(DHT.temperature);
     temperature.value = DHT.temperature;
 
-    /// Posta um item na fila.
-    /// https://www.freertos.org/a00117.html
-
-    xQueueSend(structQueue, &temperature, portMAX_DELAY);
-    vTaskDelay(2000 / portTICK_PERIOD_MS); /// Espera 2 segundos entre as leituras para estabilidade.
+    xQueueSend(structQueue, &temperature, portMAX_DELAY); /// Envia a struct temperature. Fonte: https://www.freertos.org/a00117.html
+    vTaskDelay(2000 / portTICK_PERIOD_MS); /// Espera 2 segundos entre as leituras para estabilidade do dado, pois o sensor DHT11 consegue ler a cada 1 segundo.
   }
 }
 
-void TaskProcessTemperature(void *pvParameters __attribute__((unused))) ///Tarefa que consome dado do buffer se disponível;
-{
+void TaskProcessTemperature(void *pvParameters __attribute__((unused))) {
   while (true) {
-    struct DHTTemperature currentPinRead;
-
-    /// Read an item from a queue.
-    /// https://www.freertos.org/a00118.html
-    if (xQueueReceive(structQueue, &currentPinRead, portMAX_DELAY) == pdPASS) {
-      temperatures[temperaturesPosition] = currentPinRead.value;
-      if (temperaturesPosition < 10) { /// Verifica se ainda não foram armazenados 10 dados no buffer da média.
-        i = temperaturesPosition; /// A variável de controle do buzzer recebe contador do buffer.
-        isReadingFinished = false; /// Caso não, flag continua em 0.
-        if (xSemaphoreTake(xSerialSemaphore, (TickType_t)5) == pdTRUE) {
-          /// Se o semáforo estiver disponível, a tarefa consegue o controle da porta serial.
-          Serial.print("Temp Atual: "); /// Comunica o valor lido da fila.
-          Serial.println(currentPinRead.value);
-          Serial.println(temperaturesPosition); /// Posição do buffer no momento.
+    struct DHTTemperature temperature;
+    /// Recebe a struct temperature da task TaskReadTemperature. Fonte: https://www.freertos.org/a00118.html
+    if (xQueueReceive(structQueue, &temperature, portMAX_DELAY) == pdPASS) {
+      temperatures[temperaturesPosition] = temperature.value; /// Guarda a temperatura adquirda no array temperatures.
+      if (temperaturesPosition < TEMPERATURE_QUANTITY) { /// Checa se a quantidade de valores adquidos é menor que TEMPERATURE_QUANTITY.
+        isReadingFinished = false; /// Não habilita o cálculo da média.
+        if (xSemaphoreTake(xSerialSemaphore, (TickType_t)5) == pdTRUE) { /// Verifica se a porta serial está disponível.
+          Serial.print(temperaturesPosition + 1); /// Imprime a quantidade atual de leituras.
+          Serial.print(" - Temperatura: ");
+          Serial.println(temperature.value); /// Imprime o valor da temperatura recebido.
           xSemaphoreGive(xSerialSemaphore); /// Libera a porta serial.
-          temperaturesPosition = temperaturesPosition + 1; /// Incrementa a variável de controle do buffer.
+          temperaturesPosition++; /// Incrementa a variável temperaturesPosition.
         }
-      } else {  /// Caso o contador atinja 10,
-        i = 0;  /// reseta a variável de controle do buzzer para evitar leitura do buffer.
-        isReadingFinished = true; /// Altera a flag e sinaliza que a média pode ser calculada.
+      } else {
+        isReadingFinished = true; /// Habilita o cálculo da média.
       }
+      isChecked = false; /// Não habilita o DisplayStatus.
     }
   }
 }
 
-void TaskTemperatureAvarege(void *pvParameters __attribute__((unused))) /// Tarefa que consome o buffer para cálculo da média.
-{
+void TaskTemperatureAvarege(void *pvParameters __attribute__((unused))) {
   while (true) {
-    float media; /// Variável que guarda a média.
-    float acumulado; /// Variável que guarda o acumulado dos dados do buffer.
+    float temperatureSum; /// Variável que guarda a soma das temperaturas.
 
-    if (isReadingFinished) { /// Verifica se a flag foi alterada para 1.
-      /// Executa laço para cálculo da média dos valores guardados no buffer.
-      for (int index = 0; index < 10; index++) {
-        acumulado += temperatures[index];
+    if (isReadingFinished) {
+      for (int index = 0; index < TEMPERATURE_QUANTITY; index++) { /// Realiza a soma das temperaturas adquiridas.
+        temperatureSum += temperatures[index];
       }
-      media = acumulado / 10;
-      avarage = media;
 
-      isReadingFinished = false; /// Reseta a flag para confirmar que os dados do buffer foram consumidos e podem ser substituidos.
-      temperaturesPosition = 0;  /// Reseta variável de controle do buffer.
+      avarege = temperatureSum / TEMPERATURE_QUANTITY; /// Realiza a média das temperaturas adquiridas.
+
+      temperaturesPosition = 0;  /// Reinicia a variável que guarda a quantidade de temperaturas adquiridas.
+      isReadingFinished = false; /// Não habilita o cálculo que realiza a média.
 
       if (xSemaphoreTake(xSerialSemaphore, (TickType_t)5) == pdTRUE) {
-        /// Verifica se a porta serial está disponível.
-        /// Caso obtenha o controle do semáforo,
-        Serial.print("******Media: "); /// comunica o valor da média pela porta serial.
-        Serial.println(media);
-        media = 0; /// Reseta a variável da média.
-        acumulado = 0; /// Reseta variável do acumulado.
-        xSemaphoreGive(xSerialSemaphore); /// Libera a porta serial.
+        Serial.print("Média: ");
+        Serial.println(avarege); /// Imprime a média das temeraturas.
+        temperatureSum = 0; /// Limpa a soma das temperaturas.
+        xSemaphoreGive(xSerialSemaphore);
       }
     } else {
-      isReadingFinished = false;  /// Se ainda não foram feitas 10 leituras, a média não será calculada.
-      i = temperaturesPosition;
+      isReadingFinished = false;  /// Não habilita o cálculo que realiza a média.
+      isChecked = true; /// Habilita o DisplayStatus.
     }
   }
 }
 
-void TaskBuzzer(void *pvParameters __attribute__((unused)))///Tarefa que consome o buffer para cálculo da média.
-{
-  /// Fonte:http://www.squids.com.br/arduino/index.php/projetos-arduino/projetos-squids/basico/137-projeto-36-controlando-frequencia-de-um-buzzer-com-potenciometro
+void TaskDisplayStatus(void *pvParameters __attribute__((unused))) {
   while (true) {
-    /*int frequency; ///Frequência tocada no buzzer.
-      int atual; /// Variável para guardar o valor consumido do buffer.
-      if (i > 0) {
-      atual =  temperatures[i]; /// Consome dado do buffer.
-      if (atual > 29) { /// Caso a temperatura atinja valor superior a 29, codifica os valores de temperatura
-        frequency = map(atual, 30, 80, 0, 2500); /// entre 30 e 80 para valores de frequencia entre 0 e 2500.
-      } /// Se não for detectada temperatura superior a 29, o som do buzzer apenas será alterado na chamada de noTone().
-      }
-      else { /// Se não há dados no buffer (k=0), buzzer não consome dados.
-      i = 0; /// Reseta variável de controle do buzzer.
-      }*/
-    if (i > 0) {
-      /*if (xSemaphoreTake(xSerialSemaphore, (TickType_t)5) == pdTRUE) {
-        Serial.println("******TaskBuzzer******");
-        xSemaphoreGive(xSerialSemaphore);
-        }*/
-      // digitalWrite(LED_BUILTIN, LOW);
-      if (avarage > 26.00) {
+    if (isChecked) { /// Se está habilitado o DisplayStatus, irá atualizar o valor do LED.
+      if (avarege > 26.00) { /// Se a média das temperaturas for maior que 26C irá ligar o LED ,caso o contrário irá desligar.
         digitalWrite(LED_BUILTIN, HIGH);
       } else {
         digitalWrite(LED_BUILTIN, LOW);
       }
     } else {
-      i = 0;
-      // digitalWrite(LED_BUILTIN, LOW);
-
+      isChecked = false; /// Não habilita o DisplayStatus.
     }
   }
 }
