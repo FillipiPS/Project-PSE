@@ -5,11 +5,18 @@
 #define DHT11_PIN 5 /// Pino 5 para aquisição da temperatura pelo sensor.
 #define TEMPERATURE_QUANTITY 10 /// Quantidade de temperaturas a serem capturadas.
 
-SemaphoreHandle_t xSerialSemaphore;
-
-QueueHandle_t structQueue;
+/// É necessária uma struct para criar a fila com xQueueCreate, sendo assim é utlizada para guardar o valor da temperatura.
+struct DHTTemperature {
+  float value; /// Valor da temperatura.
+};
 
 dht DHT; /// Declaração do objeto dht utilizada para obter a temperatura do sensor DHT11.
+
+/// SemaphoreHandle responsável por controlar Serial Port, garante que apenas uma tarefa controle Serial Port por vez.
+SemaphoreHandle_t xSerialSemaphore;
+
+/// QueueHandle utilizada por TaskReadTemperature para enviar a temperatura adquirida pelo sensor.
+QueueHandle_t structQueue;
 
 void TaskReadTemperature(void *pvParameters);
 void TaskProcessTemperature(void *pvParameters);
