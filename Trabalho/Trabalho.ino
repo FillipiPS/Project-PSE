@@ -61,6 +61,13 @@ void loop() { }
 
 void TaskReadTemperature(void *pvParameters __attribute__((unused))) {
   while (true) {
+    struct DHTTemperature temperature;
+    /// Leitura da temperatura utilizando a biblioteca dht.h. Fonte: https://portal.vidadesilicio.com.br/dht11-dht22-sensor-de-umidade-e-temperatura/
+    int chk = DHT.read11(DHT11_PIN);
+    temperature.value = DHT.temperature;
+
+    xQueueSend(structQueue, &temperature, portMAX_DELAY); /// Envia a struct temperature. Fonte: https://www.freertos.org/a00117.html
+    vTaskDelay(2000 / portTICK_PERIOD_MS); /// Espera 2 segundos entre as leituras para estabilidade do dado, pois o sensor DHT11 consegue ler a cada 1 segundo.
   }
 }
 
