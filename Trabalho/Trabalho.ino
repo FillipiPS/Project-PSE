@@ -18,6 +18,12 @@ SemaphoreHandle_t xSerialSemaphore;
 /// QueueHandle utilizada por TaskReadTemperature para enviar a temperatura adquirida pelo sensor.
 QueueHandle_t structQueue;
 
+float temperatures[TEMPERATURE_QUANTITY]; /// Vetor utilizado para guardar as temperaturas lidas pelo sensor.
+int temperaturesPosition; /// Variável que guarda a quantidade de temperaturas adquiridas.
+bool isReadingFinished; /// Flag responsável por calular a média das temeraturas.
+bool isChecked; /// Flag responsável por ligar o led.
+float avarege; /// Variável que guarda a média das temperaturas.
+
 void TaskReadTemperature(void *pvParameters);
 void TaskProcessTemperature(void *pvParameters);
 void TaskTemperatureAvarege(void *pvParameters);
