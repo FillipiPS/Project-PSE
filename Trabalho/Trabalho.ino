@@ -124,14 +124,14 @@ void TaskProcessTemperature(void *pvParameters __attribute__((unused))) {
 
 void TaskTemperatureAvarege(void *pvParameters __attribute__((unused))) {
   while (true) {
-    float temperatureSum; /// Variável que guarda a soma das temperaturas.
+    float temperatureSum;
 
-    if (isReadingFinished) {
+    if (isReadingFinished) { /// \paragraph IF Se a leitura das temperaturas estão finalizadas
       for (int index = 0; index < TEMPERATURE_QUANTITY; index++) { /// Realiza a soma das temperaturas adquiridas.
         temperatureSum += temperatures[index];
       }
 
-      avarege = temperatureSum / TEMPERATURE_QUANTITY; /// Realiza a média das temperaturas adquiridas.
+      avarege = temperatureSum / TEMPERATURE_QUANTITY; /// Faz a média das temperaturas adquiridas.
 
       temperaturesPosition = 0;  /// Reinicia a variável que guarda a quantidade de temperaturas adquiridas.
       isReadingFinished = false; /// Não habilita o cálculo que realiza a média.
@@ -142,7 +142,7 @@ void TaskTemperatureAvarege(void *pvParameters __attribute__((unused))) {
         temperatureSum = 0; /// Limpa a soma das temperaturas.
         xSemaphoreGive(xSerialSemaphore);
       }
-    } else {
+    } else { /// \paragraph ELSE Caso o contrário
       isReadingFinished = false;  /// Não habilita o cálculo que realiza a média.
       isChecked = true; /// Habilita o DisplayStatus.
     }
