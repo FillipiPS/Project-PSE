@@ -3,9 +3,9 @@
 #include <semphr.h>
 
 #define DHT11_PIN 5 /// Pino 5 para aquisição da temperatura pelo sensor.
-#define LED_VERDE 4
-#define LED_AMARELO 3
-#define LED_VERMELHO 2
+#define LED_VERDE 4 /// Pino 4 para a comunicação do LED verde.
+#define LED_AMARELO 3 /// Pino 3 para a comunicação do LED amarelo.
+#define LED_VERMELHO 2 /// Pino 2 para a comunicação do LED vermelho.
 #define TEMPERATURE_QUANTITY 10 /// Quantidade de temperaturas a serem capturadas.
 
 /// É necessária uma struct para criar a fila com xQueueCreate, sendo assim é utlizada para guardar o valor da temperatura.
@@ -38,9 +38,9 @@ void setup()
   Serial.println("Starting process!");
 
   pinMode(LED_BUILTIN, OUTPUT); /// Configura o pino LED_BUILTIN como saída.
-  pinMode(LED_VERDE, OUTPUT); /// Configura o pino LED_BUILTIN como saída.
-  pinMode(LED_AMARELO, OUTPUT); /// Configura o pino LED_BUILTIN como saída.
-  pinMode(LED_VERMELHO, OUTPUT); /// Configura o pino LED_BUILTIN como saída.
+  pinMode(LED_VERDE, OUTPUT); /// Configura o pino LED_VERDE como saída.
+  pinMode(LED_AMARELO, OUTPUT); /// Configura o pino LED_AMARELO como saída.
+  pinMode(LED_VERMELHO, OUTPUT); /// Configura o pino LED_VERMELHO como saída.
 
   /// Fonte: https://create.arduino.cc/projecthub/feilipu/using-freertos-semaphores-in-arduino-ide-b3cd6c
   if (xSerialSemaphore == NULL) { /// Verifica se o SerialSemaphore ainda não foi criado.
