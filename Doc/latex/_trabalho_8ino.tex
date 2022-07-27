@@ -1,0 +1,283 @@
+\hypertarget{_trabalho_8ino}{}\doxysection{C\+:/\+Users/filli/\+Desktop/\+Projeto de Sistemas Embarcados/\+Project-\/\+PSE/\+Trabalho/\+Trabalho.ino File Reference}
+\label{_trabalho_8ino}\index{C:/Users/filli/Desktop/Projeto de Sistemas Embarcados/Project-\/PSE/Trabalho/Trabalho.ino@{C:/Users/filli/Desktop/Projeto de Sistemas Embarcados/Project-\/PSE/Trabalho/Trabalho.ino}}
+{\ttfamily \#include $<$dht.\+h$>$}\newline
+{\ttfamily \#include $<$Arduino\+\_\+\+Free\+RTOS.\+h$>$}\newline
+{\ttfamily \#include $<$semphr.\+h$>$}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_d_h_t_temperature}{DHTTemperature}}
+\begin{DoxyCompactList}\small\item\em É necessária uma struct para criar a fila com x\+Queue\+Create, sendo assim é utlizada para guardar o valor da temperatura. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{_trabalho_8ino_a79111e78831efb8ac76fa8123357475e}{DHT11\+\_\+\+PIN}}~5
+\item 
+\#define \mbox{\hyperlink{_trabalho_8ino_a5c9e62d2557473a5411473d7fc9f33b0}{TEMPERATURE\+\_\+\+QUANTITY}}~10
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_a40442be9145374b4760603a66c9c1b74}{Task\+Read\+Temperature}} (void $\ast$pv\+Parameters)
+\begin{DoxyCompactList}\small\item\em Variável que guarda a média das temperaturas. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{_trabalho_8ino_afe202845147cde2fe27fe8d9e0082a3e}{Task\+Process\+Temperature}} (void $\ast$pv\+Parameters)
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_abaac30923f6174120c3b739459b08467}{Task\+Temperature\+Avarege}} (void $\ast$pv\+Parameters)
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_a99b90b975ce78b0ba76883619ad29e3b}{Task\+Display\+Status}} (void $\ast$pv\+Parameters)
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_a4fc01d736fe50cf5b977f755b675f11d}{setup}} ()
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_afe461d27b9c48d5921c00d521181f12f}{loop}} ()
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_a5be161dcaac6cc403b9a4dfc404de991}{Task\+Read\+Temperature}} (void $\ast$pv\+Parameters \+\_\+\+\_\+attribute\+\_\+\+\_\+((unused)))
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_ad1238ca1a1b0da07ac424c75ec100ac3}{Task\+Process\+Temperature}} (void $\ast$pv\+Parameters \+\_\+\+\_\+attribute\+\_\+\+\_\+((unused)))
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_a450a30234d5a2b65e09f3c083635068f}{Task\+Temperature\+Avarege}} (void $\ast$pv\+Parameters \+\_\+\+\_\+attribute\+\_\+\+\_\+((unused)))
+\item 
+void \mbox{\hyperlink{_trabalho_8ino_a68be38f59066e9519fdf04d34e854372}{Task\+Display\+Status}} (void $\ast$pv\+Parameters \+\_\+\+\_\+attribute\+\_\+\+\_\+((unused)))
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+dht \mbox{\hyperlink{_trabalho_8ino_a60b3fce5c3db34dc199e88ef05fc8c8d}{DHT}}
+\item 
+Semaphore\+Handle\+\_\+t \mbox{\hyperlink{_trabalho_8ino_a642a4265a30ef969b172df7c201b94b0}{x\+Serial\+Semaphore}}
+\begin{DoxyCompactList}\small\item\em Declaração do objeto dht utilizada para obter a temperatura do sensor DHT11. \end{DoxyCompactList}\item 
+Queue\+Handle\+\_\+t \mbox{\hyperlink{_trabalho_8ino_ad26d7a71057cdb13eeaed4f762b4cf07}{struct\+Queue}}
+\begin{DoxyCompactList}\small\item\em Queue\+Handle utilizada por Task\+Read\+Temperature para enviar a temperatura adquirida pelo sensor. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{_trabalho_8ino_aea2ab2da89bfe448f691626b43fb5abd}{temperatures}} \mbox{[}\mbox{\hyperlink{_trabalho_8ino_a5c9e62d2557473a5411473d7fc9f33b0}{TEMPERATURE\+\_\+\+QUANTITY}}\mbox{]}
+\item 
+int \mbox{\hyperlink{_trabalho_8ino_ab1a7bac000794713eb1a01d6fed0f7bd}{temperatures\+Position}}
+\begin{DoxyCompactList}\small\item\em Vetor utilizado para guardar as temperaturas lidas pelo sensor. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{_trabalho_8ino_a082665eb22d652113c431f54ce3a8e15}{is\+Reading\+Finished}}
+\begin{DoxyCompactList}\small\item\em Variável que guarda a quantidade de temperaturas adquiridas. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{_trabalho_8ino_af064752b19a76e63bf20b7c9c4b98e4e}{is\+Checked}}
+\begin{DoxyCompactList}\small\item\em Flag responsável por calular a média das temeraturas. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{_trabalho_8ino_af320e634a500f7d6f91c619dc497bc98}{avarege}}
+\begin{DoxyCompactList}\small\item\em Flag responsável por ligar o led. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{_trabalho_8ino_a79111e78831efb8ac76fa8123357475e}\label{_trabalho_8ino_a79111e78831efb8ac76fa8123357475e}} 
+\index{Trabalho.ino@{Trabalho.ino}!DHT11\_PIN@{DHT11\_PIN}}
+\index{DHT11\_PIN@{DHT11\_PIN}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{DHT11\_PIN}{DHT11\_PIN}}
+{\footnotesize\ttfamily \#define DHT11\+\_\+\+PIN~5}
+
+\mbox{\Hypertarget{_trabalho_8ino_a5c9e62d2557473a5411473d7fc9f33b0}\label{_trabalho_8ino_a5c9e62d2557473a5411473d7fc9f33b0}} 
+\index{Trabalho.ino@{Trabalho.ino}!TEMPERATURE\_QUANTITY@{TEMPERATURE\_QUANTITY}}
+\index{TEMPERATURE\_QUANTITY@{TEMPERATURE\_QUANTITY}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TEMPERATURE\_QUANTITY}{TEMPERATURE\_QUANTITY}}
+{\footnotesize\ttfamily \#define TEMPERATURE\+\_\+\+QUANTITY~10}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{_trabalho_8ino_afe461d27b9c48d5921c00d521181f12f}\label{_trabalho_8ino_afe461d27b9c48d5921c00d521181f12f}} 
+\index{Trabalho.ino@{Trabalho.ino}!loop@{loop}}
+\index{loop@{loop}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{loop()}{loop()}}
+{\footnotesize\ttfamily void loop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{_trabalho_8ino_a4fc01d736fe50cf5b977f755b675f11d}\label{_trabalho_8ino_a4fc01d736fe50cf5b977f755b675f11d}} 
+\index{Trabalho.ino@{Trabalho.ino}!setup@{setup}}
+\index{setup@{setup}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{setup()}{setup()}}
+{\footnotesize\ttfamily void setup (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Configura o Baud Rate em 9600.
+
+Configura o pino LED\+\_\+\+BUILTIN como saída.
+
+Fonte\+: \href{https://create.arduino.cc/projecthub/feilipu/using-freertos-semaphores-in-arduino-ide-b3cd6c}{\texttt{ https\+://create.\+arduino.\+cc/projecthub/feilipu/using-\/freertos-\/semaphores-\/in-\/arduino-\/ide-\/b3cd6c}}
+
+Verifica se o Serial\+Semaphore ainda não foi criado.
+
+Cria a mutex que controla a porta serial.
+
+Torna a porta serial disponível, liberando o semáforo.
+
+Cria a Queue para envio de dados do sensor.
+
+Checa se struct\+Queue é diferente de nulo para criar as tasks.
+
+Cria task responsável por obter a temperatura.
+
+Cria task responsável por inserir a temperatura obtida no array temperatures e mostrar no Serial a temperatura atual.
+
+Cria task responsável por realizar a média das temepraturas.
+
+Cria task responsável informar o status do ar-\/condicionado estar refrigerando.\mbox{\Hypertarget{_trabalho_8ino_a68be38f59066e9519fdf04d34e854372}\label{_trabalho_8ino_a68be38f59066e9519fdf04d34e854372}} 
+\index{Trabalho.ino@{Trabalho.ino}!TaskDisplayStatus@{TaskDisplayStatus}}
+\index{TaskDisplayStatus@{TaskDisplayStatus}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TaskDisplayStatus()}{TaskDisplayStatus()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Task\+Display\+Status (\begin{DoxyParamCaption}\item[{void $\ast$pv\+Parameters }]{\+\_\+\+\_\+attribute\+\_\+\+\_\+(unused) }\end{DoxyParamCaption})}
+
+Se está habilitado o Display\+Status, irá atualizar o valor do LED.
+
+Se a média das temperaturas for maior que 26C irá ligar o LED ,caso o contrário irá desligar.
+
+Não habilita o Display\+Status.\mbox{\Hypertarget{_trabalho_8ino_a99b90b975ce78b0ba76883619ad29e3b}\label{_trabalho_8ino_a99b90b975ce78b0ba76883619ad29e3b}} 
+\index{Trabalho.ino@{Trabalho.ino}!TaskDisplayStatus@{TaskDisplayStatus}}
+\index{TaskDisplayStatus@{TaskDisplayStatus}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TaskDisplayStatus()}{TaskDisplayStatus()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Task\+Display\+Status (\begin{DoxyParamCaption}\item[{void $\ast$}]{pv\+Parameters }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{_trabalho_8ino_ad1238ca1a1b0da07ac424c75ec100ac3}\label{_trabalho_8ino_ad1238ca1a1b0da07ac424c75ec100ac3}} 
+\index{Trabalho.ino@{Trabalho.ino}!TaskProcessTemperature@{TaskProcessTemperature}}
+\index{TaskProcessTemperature@{TaskProcessTemperature}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TaskProcessTemperature()}{TaskProcessTemperature()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Task\+Process\+Temperature (\begin{DoxyParamCaption}\item[{void $\ast$pv\+Parameters }]{\+\_\+\+\_\+attribute\+\_\+\+\_\+(unused) }\end{DoxyParamCaption})}
+
+Recebe a struct temperature da task Task\+Read\+Temperature. Fonte\+: \href{https://www.freertos.org/a00118.html}{\texttt{ https\+://www.\+freertos.\+org/a00118.\+html}}
+
+Guarda a temperatura adquirda no array temperatures.
+
+Checa se a quantidade de valores adquidos é menor que TEMPERATURE\+\_\+\+QUANTITY.
+
+Não habilita o cálculo da média.
+
+Verifica se a porta serial está disponível.
+
+Imprime a quantidade atual de leituras.
+
+Imprime o valor da temperatura recebido.
+
+Libera a porta serial.
+
+Incrementa a variável temperatures\+Position.
+
+Habilita o cálculo da média.
+
+Não habilita o Display\+Status.\mbox{\Hypertarget{_trabalho_8ino_afe202845147cde2fe27fe8d9e0082a3e}\label{_trabalho_8ino_afe202845147cde2fe27fe8d9e0082a3e}} 
+\index{Trabalho.ino@{Trabalho.ino}!TaskProcessTemperature@{TaskProcessTemperature}}
+\index{TaskProcessTemperature@{TaskProcessTemperature}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TaskProcessTemperature()}{TaskProcessTemperature()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Task\+Process\+Temperature (\begin{DoxyParamCaption}\item[{void $\ast$}]{pv\+Parameters }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{_trabalho_8ino_a5be161dcaac6cc403b9a4dfc404de991}\label{_trabalho_8ino_a5be161dcaac6cc403b9a4dfc404de991}} 
+\index{Trabalho.ino@{Trabalho.ino}!TaskReadTemperature@{TaskReadTemperature}}
+\index{TaskReadTemperature@{TaskReadTemperature}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TaskReadTemperature()}{TaskReadTemperature()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Task\+Read\+Temperature (\begin{DoxyParamCaption}\item[{void $\ast$pv\+Parameters }]{\+\_\+\+\_\+attribute\+\_\+\+\_\+(unused) }\end{DoxyParamCaption})}
+
+Leitura da temperatura utilizando a biblioteca dht.\+h. Fonte\+: \href{https://portal.vidadesilicio.com.br/dht11-dht22-sensor-de-umidade-e-temperatura/}{\texttt{ https\+://portal.\+vidadesilicio.\+com.\+br/dht11-\/dht22-\/sensor-\/de-\/umidade-\/e-\/temperatura/}}
+
+Envia a struct temperature. Fonte\+: \href{https://www.freertos.org/a00117.html}{\texttt{ https\+://www.\+freertos.\+org/a00117.\+html}}
+
+Espera 2 segundos entre as leituras para estabilidade do dado, pois o sensor DHT11 consegue ler a cada 1 segundo.\mbox{\Hypertarget{_trabalho_8ino_a40442be9145374b4760603a66c9c1b74}\label{_trabalho_8ino_a40442be9145374b4760603a66c9c1b74}} 
+\index{Trabalho.ino@{Trabalho.ino}!TaskReadTemperature@{TaskReadTemperature}}
+\index{TaskReadTemperature@{TaskReadTemperature}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TaskReadTemperature()}{TaskReadTemperature()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Task\+Read\+Temperature (\begin{DoxyParamCaption}\item[{void $\ast$}]{pv\+Parameters }\end{DoxyParamCaption})}
+
+
+
+Variável que guarda a média das temperaturas. 
+
+\mbox{\Hypertarget{_trabalho_8ino_a450a30234d5a2b65e09f3c083635068f}\label{_trabalho_8ino_a450a30234d5a2b65e09f3c083635068f}} 
+\index{Trabalho.ino@{Trabalho.ino}!TaskTemperatureAvarege@{TaskTemperatureAvarege}}
+\index{TaskTemperatureAvarege@{TaskTemperatureAvarege}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TaskTemperatureAvarege()}{TaskTemperatureAvarege()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Task\+Temperature\+Avarege (\begin{DoxyParamCaption}\item[{void $\ast$pv\+Parameters }]{\+\_\+\+\_\+attribute\+\_\+\+\_\+(unused) }\end{DoxyParamCaption})}
+
+Variável que guarda a soma das temperaturas.
+
+Realiza a soma das temperaturas adquiridas.
+
+Realiza a média das temperaturas adquiridas.
+
+Reinicia a variável que guarda a quantidade de temperaturas adquiridas.
+
+Não habilita o cálculo que realiza a média.
+
+Imprime a média das temeraturas.
+
+Limpa a soma das temperaturas.
+
+Não habilita o cálculo que realiza a média.
+
+Habilita o Display\+Status.\mbox{\Hypertarget{_trabalho_8ino_abaac30923f6174120c3b739459b08467}\label{_trabalho_8ino_abaac30923f6174120c3b739459b08467}} 
+\index{Trabalho.ino@{Trabalho.ino}!TaskTemperatureAvarege@{TaskTemperatureAvarege}}
+\index{TaskTemperatureAvarege@{TaskTemperatureAvarege}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{TaskTemperatureAvarege()}{TaskTemperatureAvarege()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Task\+Temperature\+Avarege (\begin{DoxyParamCaption}\item[{void $\ast$}]{pv\+Parameters }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{_trabalho_8ino_af320e634a500f7d6f91c619dc497bc98}\label{_trabalho_8ino_af320e634a500f7d6f91c619dc497bc98}} 
+\index{Trabalho.ino@{Trabalho.ino}!avarege@{avarege}}
+\index{avarege@{avarege}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{avarege}{avarege}}
+{\footnotesize\ttfamily float avarege}
+
+
+
+Flag responsável por ligar o led. 
+
+\mbox{\Hypertarget{_trabalho_8ino_a60b3fce5c3db34dc199e88ef05fc8c8d}\label{_trabalho_8ino_a60b3fce5c3db34dc199e88ef05fc8c8d}} 
+\index{Trabalho.ino@{Trabalho.ino}!DHT@{DHT}}
+\index{DHT@{DHT}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{DHT}{DHT}}
+{\footnotesize\ttfamily dht DHT}
+
+\mbox{\Hypertarget{_trabalho_8ino_af064752b19a76e63bf20b7c9c4b98e4e}\label{_trabalho_8ino_af064752b19a76e63bf20b7c9c4b98e4e}} 
+\index{Trabalho.ino@{Trabalho.ino}!isChecked@{isChecked}}
+\index{isChecked@{isChecked}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{isChecked}{isChecked}}
+{\footnotesize\ttfamily bool is\+Checked}
+
+
+
+Flag responsável por calular a média das temeraturas. 
+
+\mbox{\Hypertarget{_trabalho_8ino_a082665eb22d652113c431f54ce3a8e15}\label{_trabalho_8ino_a082665eb22d652113c431f54ce3a8e15}} 
+\index{Trabalho.ino@{Trabalho.ino}!isReadingFinished@{isReadingFinished}}
+\index{isReadingFinished@{isReadingFinished}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{isReadingFinished}{isReadingFinished}}
+{\footnotesize\ttfamily bool is\+Reading\+Finished}
+
+
+
+Variável que guarda a quantidade de temperaturas adquiridas. 
+
+\mbox{\Hypertarget{_trabalho_8ino_ad26d7a71057cdb13eeaed4f762b4cf07}\label{_trabalho_8ino_ad26d7a71057cdb13eeaed4f762b4cf07}} 
+\index{Trabalho.ino@{Trabalho.ino}!structQueue@{structQueue}}
+\index{structQueue@{structQueue}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{structQueue}{structQueue}}
+{\footnotesize\ttfamily Queue\+Handle\+\_\+t struct\+Queue}
+
+
+
+Queue\+Handle utilizada por Task\+Read\+Temperature para enviar a temperatura adquirida pelo sensor. 
+
+\mbox{\Hypertarget{_trabalho_8ino_aea2ab2da89bfe448f691626b43fb5abd}\label{_trabalho_8ino_aea2ab2da89bfe448f691626b43fb5abd}} 
+\index{Trabalho.ino@{Trabalho.ino}!temperatures@{temperatures}}
+\index{temperatures@{temperatures}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{temperatures}{temperatures}}
+{\footnotesize\ttfamily float temperatures\mbox{[}\mbox{\hyperlink{_trabalho_8ino_a5c9e62d2557473a5411473d7fc9f33b0}{TEMPERATURE\+\_\+\+QUANTITY}}\mbox{]}}
+
+\mbox{\Hypertarget{_trabalho_8ino_ab1a7bac000794713eb1a01d6fed0f7bd}\label{_trabalho_8ino_ab1a7bac000794713eb1a01d6fed0f7bd}} 
+\index{Trabalho.ino@{Trabalho.ino}!temperaturesPosition@{temperaturesPosition}}
+\index{temperaturesPosition@{temperaturesPosition}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{temperaturesPosition}{temperaturesPosition}}
+{\footnotesize\ttfamily int temperatures\+Position}
+
+
+
+Vetor utilizado para guardar as temperaturas lidas pelo sensor. 
+
+\mbox{\Hypertarget{_trabalho_8ino_a642a4265a30ef969b172df7c201b94b0}\label{_trabalho_8ino_a642a4265a30ef969b172df7c201b94b0}} 
+\index{Trabalho.ino@{Trabalho.ino}!xSerialSemaphore@{xSerialSemaphore}}
+\index{xSerialSemaphore@{xSerialSemaphore}!Trabalho.ino@{Trabalho.ino}}
+\doxysubsubsection{\texorpdfstring{xSerialSemaphore}{xSerialSemaphore}}
+{\footnotesize\ttfamily Semaphore\+Handle\+\_\+t x\+Serial\+Semaphore}
+
+
+
+Declaração do objeto dht utilizada para obter a temperatura do sensor DHT11. 
+
+Semaphore\+Handle responsável por controlar Serial Port, garante que apenas uma tarefa controle Serial Port por vez. 
