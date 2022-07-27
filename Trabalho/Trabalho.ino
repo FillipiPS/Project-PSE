@@ -15,10 +15,12 @@
 
 /// É necessária uma struct para criar a fila com xQueueCreate, sendo assim é utlizada para guardar o valor da temperatura.
 struct DHTTemperature {
-  float value; /// Valor da temperatura.
+  /// Valor da temperatura.
+  float value;
 };
 
-dht DHT; /// Declaração do objeto dht utilizada para obter a temperatura do sensor DHT11.
+/// dht é utilizada para obter a temperatura do sensor DHT11.
+dht DHT;
 
 /// SemaphoreHandle responsável por controlar Serial Port, garante que apenas uma tarefa controle o Serial Port por vez.
 SemaphoreHandle_t xSerialSemaphore;
@@ -26,37 +28,46 @@ SemaphoreHandle_t xSerialSemaphore;
 /// QueueHandle utilizada por TaskReadTemperature para enviar a temperatura adquirida pelo sensor.
 QueueHandle_t structQueue;
 
-float temperatures[TEMPERATURE_QUANTITY]; /// Vetor utilizado para guardar as temperaturas lidas pelo sensor.
-int temperaturesPosition; /// Variável que guarda a quantidade de temperaturas adquiridas.
-bool isReadingFinished; /// Flag responsável por calular a média das temeraturas.
-bool isChecked; /// Flag responsável por ligar o led.
-float avarege; /// Variável que guarda a média das temperaturas.
+/// Vetor utilizado para guardar as temperaturas lidas pelo sensor.
+float temperatures[TEMPERATURE_QUANTITY];
+/// Variável que guarda a média das temperaturas.
+float avarege;
+/// Variável que guarda a quantidade de temperaturas adquiridas.
+int temperaturesPosition;
+/// Flag responsável por habilitar a tarefa que realiza a média das temeraturas.
+bool isReadingFinished;
+/// Flag responsável por habilitar a tarefa que realiza informa o status.
+bool isChecked;
 
 void TaskReadTemperature(void *pvParameters);
 void TaskProcessTemperature(void *pvParameters);
 void TaskTemperatureAvarege(void *pvParameters);
 void TaskDisplayStatus(void *pvParameters);
 
+/*! \fn void setup() 
+ *  \brief Responsável por realizar a configuração inicial sistema.
+ *  \paragraph configuracao Configurações 
+ */
+
 void setup()
 {
-  Serial.begin(9600); /// Configura o Baud Rate em 9600.
+  Serial.begin(9600); /// Baud Rate = 9600.
   Serial.println("Starting process!");
 
-  pinMode(LED_BUILTIN, OUTPUT); /// Configura o pino LED_BUILTIN como saída.
-  pinMode(LED_GREEN, OUTPUT); /// Configura o pino LED_GREEN como saída.
-  pinMode(LED_YELLOW, OUTPUT); /// Configura o pino LED_YELLOW como saída.
-  pinMode(LED_RED, OUTPUT); /// Configura o pino LED_RED como saída.
+  pinMode(LED_BUILTIN, OUTPUT); /// Pino LED_BUILTIN como saída.
+  pinMode(LED_GREEN, OUTPUT); /// Pino LED_GREEN como saída.
+  pinMode(LED_YELLOW, OUTPUT); /// Pino LED_YELLOW como saída.
+  pinMode(LED_RED, OUTPUT); /// Pino LED_RED como saída.
 
-  /// Fonte: https://create.arduino.cc/projecthub/feilipu/using-freertos-semaphores-in-arduino-ide-b3cd6c
-  if (xSerialSemaphore == NULL) { /// Verifica se o SerialSemaphore ainda não foi criado.
+  if (xSerialSemaphore == NULL) { 
     xSerialSemaphore = xSemaphoreCreateMutex(); /// Cria a mutex que controla a porta serial.
   } else {
-    xSemaphoreGive(xSerialSemaphore); /// Torna a porta serial disponível, liberando o semáforo.
+    xSemaphoreGive(xSerialSemaphore);
   }
 
   structQueue = xQueueCreate(10, sizeof(struct DHTTemperature)); /// Cria a Queue para envio de dados do sensor.
 
-  if (structQueue != NULL) { /// Checa se structQueue é diferente de nulo para criar as tasks.
+  if (structQueue != NULL) {
     xTaskCreate(TaskReadTemperature, "ReadTemperature", 128, NULL, 2, NULL); /// Cria task responsável por obter a temperatura.
     xTaskCreate(TaskProcessTemperature, "ProcessTemperature", 128, NULL, 2, NULL); /// Cria task responsável por inserir a temperatura obtida no array temperatures e mostrar no Serial a temperatura atual.
     xTaskCreate(TaskTemperatureAvarege, "TemperatureAvarege", 128, NULL, 2, NULL); /// Cria task responsável por realizar a média das temepraturas.
