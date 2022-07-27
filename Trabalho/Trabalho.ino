@@ -152,23 +152,23 @@ void TaskTemperatureAvarege(void *pvParameters __attribute__((unused))) {
 void TaskDisplayStatus(void *pvParameters __attribute__((unused))) {
   while (true) {
     if (isChecked) { /// Se está habilitado o DisplayStatus, irá atualizar o valor do LED.
-    if (avarege < 23) {
+    if (avarege < 23) { /// Se a média for menor que 23 graus irá acender o LED verde.
         digitalWrite(LED_GREEN, HIGH);
         digitalWrite(LED_YELLOW, LOW);
         digitalWrite(LED_RED, LOW);
       }
-      if (avarege > 23 && avarege < 26) {
+      if (avarege > 23 && avarege < 26) { /// Se a média estiver entre 23 e 26 graus irá acender o LED amarelo.
         digitalWrite(LED_GREEN, LOW);
         digitalWrite(LED_YELLOW, HIGH);
         digitalWrite(LED_RED, LOW);
       }
-      if (avarege > 26) {
+      if (avarege > 26) { /// Se a média for maior que 26 graus irá acender o LED vermelho.
         digitalWrite(LED_GREEN, LOW);
         digitalWrite(LED_YELLOW, LOW);
         digitalWrite(LED_RED, HIGH);
       }
     } else {
-      isChecked = false; /// Não habilita o DisplayStatus.
+      isChecked = false;
     }
   }
 }
