@@ -75,6 +75,9 @@ void setup()
   }
 }
 
+/*! \fn void loop() 
+ *  \brief Método vazio, pois o fluxo é realizado pelas tasks.
+ */
 void loop() { }
 
 ///*--------------------------------------------------*/
