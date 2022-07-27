@@ -39,9 +39,13 @@ bool isReadingFinished;
 /// Flag responsável por habilitar a tarefa que realiza informa o status.
 bool isChecked;
 
+/// @private
 void TaskReadTemperature(void *pvParameters);
+/// @private
 void TaskProcessTemperature(void *pvParameters);
+/// @private
 void TaskTemperatureAvarege(void *pvParameters);
+/// @private
 void TaskDisplayStatus(void *pvParameters);
 
 /*! \fn void setup() 
@@ -84,14 +88,13 @@ void loop() { }
 ///*---------------------- Tasks ---------------------*/
 ///*--------------------------------------------------*/
 
-void TaskReadTemperature(void *pvParameters __attribute__((unused))) {
+void TaskReadTemperature(void *pvParameters __attribute__((unused))) { /// Tarefa responsável por realizar a leitura da temperatura utilizando a biblioteca dht.h. Fonte: https://portal.vidadesilicio.com.br/dht11-dht22-sensor-de-umidade-e-temperatura/
   while (true) {
     struct DHTTemperature temperature;
-    /// Leitura da temperatura utilizando a biblioteca dht.h. Fonte: https://portal.vidadesilicio.com.br/dht11-dht22-sensor-de-umidade-e-temperatura/
     int chk = DHT.read11(DHT11_PIN);
     temperature.value = DHT.temperature;
 
-    xQueueSend(structQueue, &temperature, portMAX_DELAY); /// Envia a struct temperature. Fonte: https://www.freertos.org/a00117.html
+    xQueueSend(structQueue, &temperature, portMAX_DELAY); /// Faz o envio da struct temperature.
     vTaskDelay(2000 / portTICK_PERIOD_MS); /// Espera 2 segundos entre as leituras para estabilidade do dado, pois o sensor DHT11 consegue ler a cada 1 segundo.
   }
 }
