@@ -102,16 +102,16 @@ void TaskReadTemperature(void *pvParameters __attribute__((unused))) { /// Taref
 void TaskProcessTemperature(void *pvParameters __attribute__((unused))) {
   while (true) {
     struct DHTTemperature temperature;
-    /// Recebe a struct temperature da task TaskReadTemperature. Fonte: https://www.freertos.org/a00118.html
+    /// Recebe a struct temperature da task TaskReadTemperature.
     if (xQueueReceive(structQueue, &temperature, portMAX_DELAY) == pdPASS) {
       temperatures[temperaturesPosition] = temperature.value; /// Guarda a temperatura adquirda no array temperatures.
       if (temperaturesPosition < TEMPERATURE_QUANTITY) { /// Checa se a quantidade de valores adquidos é menor que TEMPERATURE_QUANTITY.
         isReadingFinished = false; /// Não habilita o cálculo da média.
-        if (xSemaphoreTake(xSerialSemaphore, (TickType_t)5) == pdTRUE) { /// Verifica se a porta serial está disponível.
+        if (xSemaphoreTake(xSerialSemaphore, (TickType_t)5) == pdTRUE) {
           Serial.print(temperaturesPosition + 1); /// Imprime a quantidade atual de leituras.
           Serial.print(" - Temperatura: ");
           Serial.println(temperature.value); /// Imprime o valor da temperatura recebido.
-          xSemaphoreGive(xSerialSemaphore); /// Libera a porta serial.
+          xSemaphoreGive(xSerialSemaphore);
           temperaturesPosition++; /// Incrementa a variável temperaturesPosition.
         }
       } else {
