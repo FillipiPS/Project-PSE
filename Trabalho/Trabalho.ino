@@ -2,11 +2,16 @@
 #include <Arduino_FreeRTOS.h>
 #include <semphr.h>
 
-#define DHT11_PIN 5 /// Pino 5 para aquisição da temperatura pelo sensor.
-#define LED_GREEN 4 /// Pino 4 para a comunicação do LED verde.
-#define LED_YELLOW 3 /// Pino 3 para a comunicação do LED amarelo.
-#define LED_RED 2 /// Pino 2 para a comunicação do LED vermelho.
-#define TEMPERATURE_QUANTITY 10 /// Quantidade de temperaturas a serem capturadas.
+/// Pino 5 para aquisição da temperatura pelo sensor.
+#define DHT11_PIN 5
+/// Pino 4 para a comunicação do LED verde.
+#define LED_GREEN 4
+/// Pino 3 para a comunicação do LED amarelo.
+#define LED_YELLOW 3
+/// Pino 2 para a comunicação do LED vermelho.
+#define LED_RED 2
+/// Quantidade de temperaturas a serem capturadas.
+#define TEMPERATURE_QUANTITY 10
 
 /// É necessária uma struct para criar a fila com xQueueCreate, sendo assim é utlizada para guardar o valor da temperatura.
 struct DHTTemperature {
