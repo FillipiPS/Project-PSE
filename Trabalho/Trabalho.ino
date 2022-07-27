@@ -4,11 +4,11 @@
 
 /// Pino 5 para aquisição da temperatura pelo sensor.
 #define DHT11_PIN 5
-/// Pino 4 para a comunicação do LED verde.
+/// Pino 4 para a comunicação do LED verde (Temperatura fria).
 #define LED_GREEN 4
-/// Pino 3 para a comunicação do LED amarelo.
+/// Pino 3 para a comunicação do LED amarelo (Temperatura ambiente).
 #define LED_YELLOW 3
-/// Pino 2 para a comunicação do LED vermelho.
+/// Pino 2 para a comunicação do LED vermelho (Temperatura quente).
 #define LED_RED 2
 /// Quantidade de temperaturas a serem capturadas.
 #define TEMPERATURE_QUANTITY 10
@@ -88,7 +88,10 @@ void loop() { }
 ///*---------------------- Tasks ---------------------*/
 ///*--------------------------------------------------*/
 
-void TaskReadTemperature(void *pvParameters __attribute__((unused))) { /// Tarefa responsável por realizar a leitura da temperatura utilizando a biblioteca dht.h. Fonte: https://portal.vidadesilicio.com.br/dht11-dht22-sensor-de-umidade-e-temperatura/
+/*! \fn TaskReadTemperature(void *pvParameters __attribute__((unused)))
+ *  \brief Tarefa responsável por realizar a leitura da temperatura utilizando a biblioteca dht.h.
+ */
+void TaskReadTemperature(void *pvParameters __attribute__((unused))) {
   while (true) {
     struct DHTTemperature temperature;
     int chk = DHT.read11(DHT11_PIN);
@@ -99,6 +102,9 @@ void TaskReadTemperature(void *pvParameters __attribute__((unused))) { /// Taref
   }
 }
 
+/*! \fn TaskProcessTemperature(void *pvParameters __attribute__((unused)))
+ *  \brief Tarefa responsável por imprimir no Serial Port a temperatura atual e salvar no array.
+ */
 void TaskProcessTemperature(void *pvParameters __attribute__((unused))) {
   while (true) {
     struct DHTTemperature temperature;
@@ -122,6 +128,9 @@ void TaskProcessTemperature(void *pvParameters __attribute__((unused))) {
   }
 }
 
+/*! \fn TaskTemperatureAvarege(void *pvParameters __attribute__((unused)))
+ *  \brief Tarefa responsável por realizar a média das temperaturas.
+ */
 void TaskTemperatureAvarege(void *pvParameters __attribute__((unused))) {
   while (true) {
     float temperatureSum;
@@ -149,6 +158,9 @@ void TaskTemperatureAvarege(void *pvParameters __attribute__((unused))) {
   }
 }
 
+/*! \fn TaskDisplayStatus(void *pvParameters __attribute__((unused)))
+ *  \brief Tarefa responsável por ligar os LEDs de indicação de temperatura.
+ */
 void TaskDisplayStatus(void *pvParameters __attribute__((unused))) {
   while (true) {
     if (isChecked) { /// Se está habilitado o DisplayStatus, irá atualizar o valor do LED.
