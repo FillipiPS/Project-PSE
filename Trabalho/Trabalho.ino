@@ -3,9 +3,9 @@
 #include <semphr.h>
 
 #define DHT11_PIN 5 /// Pino 5 para aquisição da temperatura pelo sensor.
-#define LED_VERDE 4 /// Pino 4 para a comunicação do LED verde.
-#define LED_AMARELO 3 /// Pino 3 para a comunicação do LED amarelo.
-#define LED_VERMELHO 2 /// Pino 2 para a comunicação do LED vermelho.
+#define LED_GREEN 4 /// Pino 4 para a comunicação do LED verde.
+#define LED_YELLOW 3 /// Pino 3 para a comunicação do LED amarelo.
+#define LED_RED 2 /// Pino 2 para a comunicação do LED vermelho.
 #define TEMPERATURE_QUANTITY 10 /// Quantidade de temperaturas a serem capturadas.
 
 /// É necessária uma struct para criar a fila com xQueueCreate, sendo assim é utlizada para guardar o valor da temperatura.
@@ -38,9 +38,9 @@ void setup()
   Serial.println("Starting process!");
 
   pinMode(LED_BUILTIN, OUTPUT); /// Configura o pino LED_BUILTIN como saída.
-  pinMode(LED_VERDE, OUTPUT); /// Configura o pino LED_VERDE como saída.
-  pinMode(LED_AMARELO, OUTPUT); /// Configura o pino LED_AMARELO como saída.
-  pinMode(LED_VERMELHO, OUTPUT); /// Configura o pino LED_VERMELHO como saída.
+  pinMode(LED_GREEN, OUTPUT); /// Configura o pino LED_GREEN como saída.
+  pinMode(LED_YELLOW, OUTPUT); /// Configura o pino LED_YELLOW como saída.
+  pinMode(LED_RED, OUTPUT); /// Configura o pino LED_RED como saída.
 
   /// Fonte: https://create.arduino.cc/projecthub/feilipu/using-freertos-semaphores-in-arduino-ide-b3cd6c
   if (xSerialSemaphore == NULL) { /// Verifica se o SerialSemaphore ainda não foi criado.
@@ -131,19 +131,19 @@ void TaskDisplayStatus(void *pvParameters __attribute__((unused))) {
   while (true) {
     if (isChecked) { /// Se está habilitado o DisplayStatus, irá atualizar o valor do LED.
     if (avarege < 23) {
-        digitalWrite(LED_VERDE, HIGH);
-        digitalWrite(LED_AMARELO, LOW);
-        digitalWrite(LED_VERMELHO, LOW);
+        digitalWrite(LED_GREEN, HIGH);
+        digitalWrite(LED_YELLOW, LOW);
+        digitalWrite(LED_RED, LOW);
       }
       if (avarege > 23 && avarege < 26) {
-        digitalWrite(LED_VERDE, LOW);
-        digitalWrite(LED_AMARELO, HIGH);
-        digitalWrite(LED_VERMELHO, LOW);
+        digitalWrite(LED_GREEN, LOW);
+        digitalWrite(LED_YELLOW, HIGH);
+        digitalWrite(LED_RED, LOW);
       }
       if (avarege > 26) {
-        digitalWrite(LED_VERDE, LOW);
-        digitalWrite(LED_AMARELO, LOW);
-        digitalWrite(LED_VERMELHO, HIGH);
+        digitalWrite(LED_GREEN, LOW);
+        digitalWrite(LED_YELLOW, LOW);
+        digitalWrite(LED_RED, HIGH);
       }
     } else {
       isChecked = false; /// Não habilita o DisplayStatus.
