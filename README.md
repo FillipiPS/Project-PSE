@@ -16,3 +16,8 @@ Uso de semáforo através da biblioteca semphr. permitindo o controle da porta s
 ## Temporização
 Uso de atraso na aquisição da temperatura por especificação do funcionamento do sensor de temperatura em questão.
 
+![GitHub](https://img.shields.io/github/license/FillipiPS/Project-PSE)
+![GitHub repo file count](https://img.shields.io/github/directory-file-count/FillipiPS/Project-PSE)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/FillipiPS/Project-PSE)
+![GitHub contributors](https://img.shields.io/github/contributors/FillipiPS/Project-PSE)
+![GitHub last commit](https://img.shields.io/github/last-commit/FillipiPS/Project-PSE)
